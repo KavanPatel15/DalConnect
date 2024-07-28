@@ -1,0 +1,41 @@
+image: maven:3.8.4-openjdk-17
+
+stages:
+  - build
+  - test
+
+# Frontend Build stage
+build_frontend:
+  stage: build
+  image: node:18 # Use a Node.js image for frontend build
+  script:
+    - cd Frontend
+    - echo "Installing frontend dependencies..."
+    - npm install
+    - echo "Building the frontend..."
+    - npm run build
+  artifacts:
+    paths:
+      - Frontend/build
+  only:
+    - main
+
+# Backend Build stage
+build_backend:
+  stage: build
+  script:
+    - cd Backend
+    - echo "Building the backend project..."
+    - mvn clean install
+  only:
+    - main
+
+# Backend Test stage
+test_backend:
+  stage: test
+  script:
+    - cd Backend
+    - echo "Running backend tests..."
+    - mvn test
+  only:
+    - main
